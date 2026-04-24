@@ -1,7 +1,8 @@
 import streamlit as st
-from jinja2 import Environment, FileSystemLoader
-from weasyprint import HTML
-import os
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+import datetime
 
 st.set_page_config(page_title="Generador de Contratos", layout="centered")
 
@@ -62,44 +63,70 @@ lugar_fecha = st.text_input("Lugar y fecha de firma")
 # =========================
 if st.button("📄 Generar contrato"):
 
-    ruta = os.path.dirname(os.path.abspath(__file__))
-    env = Environment(loader=FileSystemLoader(ruta))
-    template = env.get_template("contrato_template.html")
+    styles = getSampleStyleSheet()
+    contenido = []
 
-    html = template.render(
-        arrendador_nombre=arrendador_nombre,
-        tipo_doc_arrendador=tipo_doc_arrendador,
-        arrendador_doc=arrendador_doc,
-        arrendador_direccion=arrendador_direccion,
+    def add(text):
+        contenido.append(Paragraph(text, styles["Normal"]))
+        contenido.append(Spacer(1, 8))
 
-        arrendatario_nombre=arrendatario_nombre,
-        tipo_documento=tipo_doc,
-        arrendatario_documento=arrendatario_doc,
-        arrendatario_direccion=arrendatario_direccion,
+    # =========================
+    # CONTENIDO DEL CONTRATO
+    # =========================
+    add("<b>CONTRATO DE ALQUILER DE LOCAL PARA EVENTO</b>")
 
-        direccion_local=direccion_local,
-        fecha_evento=fecha_evento.strftime("%d/%m/%Y"),
-        hora_inicio=str(hora_inicio),
-        hora_fin=str(hora_fin),
+    add(f"EL ARRENDADOR: {arrendador_nombre}, identificado con {tipo_doc_arrendador} N° {arrendador_doc}, con domicilio en {arrendador_direccion}.")
+    add(f"EL ARRENDATARIO: {arrendatario_nombre}, identificado con {tipo_doc} N° {arrendatario_doc}, con domicilio en {arrendatario_direccion}.")
 
-        monto_total=monto_total,
-        adelanto=adelanto,
-        saldo=saldo,
-        fecha_pago=fecha_pago.strftime("%d/%m/%Y"),
+    add("<b>PRIMERA: OBJETO DEL CONTRATO</b>")
+    add(f"El local ubicado en {direccion_local} será utilizado para un evento privado.")
 
-        jurisdiccion=jurisdiccion,
-        lugar_fecha=lugar_fecha,
-        monto_texto=str(monto_total)
-    )
+    add("<b>SEGUNDA: FECHA Y HORARIO</b>")
+    add(f"Fecha: {fecha_evento.strftime('%d/%m/%Y')}")
+    add(f"Inicio: {hora_inicio} - Fin: {hora_fin}")
 
-    with open("contrato.html", "w", encoding="utf-8") as f:
-        f.write(html)
+    add("<b>TERCERA: PRECIO</b>")
+    add(f"Monto total: S/ {monto_total}")
+    add(f"Adelanto: S/ {adelanto} ({fecha_pago.strftime('%d/%m/%Y')})")
+    add(f"Saldo: S/ {saldo}")
 
-    HTML("contrato.html").write_pdf("contrato.pdf")
+    add("<b>CUARTA: USO DEL LOCAL</b>")
+    add("No subarrendar, no exceder capacidad, no actividades ilícitas.")
+
+    add("<b>QUINTA: RUIDOS</b>")
+    add("El arrendatario respetará niveles de ruido.")
+
+    add("<b>SEXTA: DAÑOS</b>")
+    add("Responsable por daños ocasionados.")
+
+    add("<b>SÉPTIMA: SEGURIDAD</b>")
+    add("Responsabilidad del arrendatario.")
+
+    add("<b>OCTAVA: CANCELACIÓN</b>")
+    add("No devolución si cancela el arrendatario.")
+
+    add("<b>NOVENA: MODIFICACIONES</b>")
+    add("Toda modificación debe ser por escrito.")
+
+    add("<b>DÉCIMA: JURISDICCIÓN</b>")
+    add(f"Jurisdicción: {jurisdiccion}")
+
+    add(f"Lugar y fecha: {lugar_fecha}")
+
+    add(" ")
+    add("EL ARRENDADOR ______________________")
+    add("EL ARRENDATARIO ______________________")
+
+    # =========================
+    # CREAR PDF
+    # =========================
+    pdf_file = "contrato.pdf"
+    doc = SimpleDocTemplate(pdf_file, pagesize=A4)
+    doc.build(contenido)
 
     st.success("✅ Contrato generado correctamente")
 
-    with open("contrato.pdf", "rb") as f:
+    with open(pdf_file, "rb") as f:
         st.download_button(
             label="📥 Descargar PDF",
             data=f,
