@@ -1,39 +1,68 @@
 import streamlit as st
 from jinja2 import Environment, FileSystemLoader
-from xhtml2pdf import pisa
-import os
+import base64
 
 st.set_page_config(page_title="Generador de Contratos", layout="centered")
 
 st.title("📄 Generador de Contrato de Evento")
 
 # =========================
-# RUTA BASE
+# FUNCION NUMERO A LETRAS
 # =========================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+def numero_a_letras(num):
+    unidades = ["", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"]
+    especiales = ["diez", "once", "doce", "trece", "catorce", "quince"]
+    decenas = ["", "", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"]
+    centenas = ["", "cien", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"]
+
+    if num == 0:
+        return "cero"
+
+    if num < 10:
+        return unidades[num]
+
+    if num < 16:
+        return especiales[num - 10]
+
+    if num < 20:
+        return "dieci" + unidades[num - 10]
+
+    if num < 100:
+        d, u = divmod(num, 10)
+        if u == 0:
+            return decenas[d]
+        return decenas[d] + " y " + unidades[u]
+
+    if num < 1000:
+        c, r = divmod(num, 100)
+        if r == 0:
+            return centenas[c]
+        return centenas[c] + " " + numero_a_letras(r)
+
+    return str(num)
 
 # =========================
-# ARRENDADOR
+# FORMATO HORA AM/PM
 # =========================
-st.subheader("🏢 Datos del Arrendador")
-arrendador_nombre = st.text_input("Nombre del arrendador")
-tipo_doc_arrendador = st.selectbox("Tipo doc arrendador", ["DNI", "RUC", "Otro"])
-arrendador_doc = st.text_input("Número documento")
+def formato_hora(hora):
+    return hora.strftime("%I:%M %p")
+
+# =========================
+# DATOS
+# =========================
+st.subheader("🏢 Arrendador")
+arrendador_nombre = st.text_input("Nombre")
+arrendador_doc = st.selectbox("Tipo doc", ["DNI", "Carnet de Extranjería", "Pasaporte"])
+arrendador_dni = st.text_input("Número")
 arrendador_direccion = st.text_input("Dirección")
 
-# =========================
-# CLIENTE
-# =========================
-st.subheader("👤 Datos del Cliente")
+st.subheader("👤 Cliente")
 arrendatario_nombre = st.text_input("Nombre cliente")
-tipo_doc = st.selectbox("Tipo doc cliente", ["DNI", "Carnet de Extranjería", "Pasaporte", "Otro"])
-arrendatario_doc = st.text_input("Número documento cliente")
+arrendatario_doc = st.selectbox("Tipo doc cliente", ["DNI", "Carnet de Extranjería", "Pasaporte"])
+arrendatario_dni = st.text_input("Número cliente")
 arrendatario_direccion = st.text_input("Dirección cliente")
 
-# =========================
-# EVENTO
-# =========================
-st.subheader("📅 Datos del Evento")
+st.subheader("📅 Evento")
 direccion_local = st.text_input("Dirección del local")
 
 fecha_inicio = st.date_input("Fecha inicio")
@@ -42,84 +71,61 @@ hora_inicio = st.time_input("Hora inicio")
 fecha_fin = st.date_input("Fecha fin")
 hora_fin = st.time_input("Hora fin")
 
-# =========================
-# PAGOS
-# =========================
-st.subheader("💰 Pagos")
+st.subheader("💰 Pago")
 monto_total = st.number_input("Monto total", min_value=0.0)
 adelanto = st.number_input("Adelanto", min_value=0.0)
 saldo = monto_total - adelanto
 fecha_pago = st.date_input("Fecha adelanto")
 
-# =========================
-# LEGAL
-# =========================
 st.subheader("⚖️ Legal")
 jurisdiccion = st.text_input("Jurisdicción")
-lugar_fecha = st.text_input("Lugar y fecha firma")
+lugar_fecha = st.text_input("Lugar y fecha")
 
 # =========================
 # GENERAR
 # =========================
 if st.button("📄 Generar contrato"):
 
-    try:
-        env = Environment(loader=FileSystemLoader(BASE_DIR))
-        template = env.get_template("contrato_template.html")
+    monto_letras = numero_a_letras(int(monto_total)) + " soles"
 
-        html = template.render(
-            arrendador_nombre=arrendador_nombre,
-            tipo_doc_arrendador=tipo_doc_arrendador,
-            arrendador_doc=arrendador_doc,
-            arrendador_direccion=arrendador_direccion,
+    env = Environment(loader=FileSystemLoader('.'))
+    template = env.get_template("contrato_template.html")
 
-            arrendatario_nombre=arrendatario_nombre,
-            tipo_documento=tipo_doc,
-            arrendatario_documento=arrendatario_doc,
-            arrendatario_direccion=arrendatario_direccion,
+    html = template.render(
+        arrendador_nombre=arrendador_nombre,
+        arrendador_doc=arrendador_doc,
+        arrendador_dni=arrendador_dni,
+        arrendador_direccion=arrendador_direccion,
 
-            direccion_local=direccion_local,
+        arrendatario_nombre=arrendatario_nombre,
+        arrendatario_doc=arrendatario_doc,
+        arrendatario_dni=arrendatario_dni,
+        arrendatario_direccion=arrendatario_direccion,
 
-            fecha_inicio=fecha_inicio.strftime("%d/%m/%Y") if fecha_inicio else "",
-            hora_inicio=str(hora_inicio),
-            fecha_fin=fecha_fin.strftime("%d/%m/%Y") if fecha_fin else "",
-            hora_fin=str(hora_fin),
+        direccion_local=direccion_local,
 
-            monto_total=monto_total,
-            adelanto=adelanto,
-            saldo=saldo,
-            fecha_pago=fecha_pago.strftime("%d/%m/%Y") if fecha_pago else "",
+        fecha_inicio=fecha_inicio.strftime("%d/%m/%Y"),
+        hora_inicio=formato_hora(hora_inicio),
 
-            jurisdiccion=jurisdiccion,
-            lugar_fecha=lugar_fecha
-        )
+        fecha_fin=fecha_fin.strftime("%d/%m/%Y"),
+        hora_fin=formato_hora(hora_fin),
 
-        # Guardar HTML
-        html_path = os.path.join(BASE_DIR, "contrato.html")
-        pdf_path = os.path.join(BASE_DIR, "contrato.pdf")
+        monto_total=monto_total,
+        monto_letras=monto_letras,
+        adelanto=adelanto,
+        saldo=saldo,
+        fecha_pago=fecha_pago.strftime("%d/%m/%Y"),
 
-        with open(html_path, "w", encoding="utf-8") as f:
-            f.write(html)
+        jurisdiccion=jurisdiccion,
+        lugar_fecha=lugar_fecha
+    )
 
-        # Generar PDF
-        with open(html_path, "r", encoding="utf-8") as f:
-            source_html = f.read()
+    st.success("✅ Contrato generado")
 
-        with open(pdf_path, "wb") as output_file:
-            pisa_status = pisa.CreatePDF(source_html, dest=output_file)
+    # MOSTRAR
+    st.components.v1.html(html, height=900, scrolling=True)
 
-        if pisa_status.err:
-            st.error("❌ Error generando PDF")
-        else:
-            st.success("✅ Contrato generado")
-
-            with open(pdf_path, "rb") as f:
-                st.download_button(
-                    label="📥 Descargar PDF",
-                    data=f,
-                    file_name="contrato_evento.pdf",
-                    mime="application/pdf"
-                )
-
-    except Exception as e:
-        st.error(f"❌ Error general: {e}")
+    # DESCARGAR HTML (FUNCIONA EN CELULAR)
+    b64 = base64.b64encode(html.encode()).decode()
+    href = f'<a href="data:text/html;base64,{b64}" download="contrato.html">📥 Descargar contrato</a>'
+    st.markdown(href, unsafe_allow_html=True)

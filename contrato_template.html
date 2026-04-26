@@ -1,72 +1,163 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
+<title>Contrato de Evento</title>
 
 <style>
-@page {
-    size: A4;
-    margin: 2cm;
-}
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        margin: 40px;
+        line-height: 1.6;
+    }
 
-body {
-    font-family: Arial;
-    font-size: 11pt;
-    line-height: 1.4;
-}
+    h1 {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
 
-h2 {
-    text-align: center;
-}
+    strong {
+        font-weight: bold;
+    }
 
-.titulo {
-    font-weight: bold;
-    margin-top: 10px;
-}
+    .section-title {
+        font-weight: bold;
+        margin-top: 15px;
+    }
+
+    .firma {
+        margin-top: 60px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .firma div {
+        width: 45%;
+        text-align: center;
+    }
+
+    @media print {
+        body {
+            margin: 20mm;
+        }
+    }
 </style>
 
 </head>
 
 <body>
 
-<h2>CONTRATO DE ALQUILER DE LOCAL PARA EVENTO</h2>
+<h1>CONTRATO DE ALQUILER DE LOCAL PARA EVENTO</h1>
 
 <p>
-EL ARRENDADOR: {{ arrendador_nombre }}, identificado con {{ tipo_doc_arrendador }} N° {{ arrendador_doc }},
-con domicilio en {{ arrendador_direccion }}.
+Conste por el presente documento el Contrato de Alquiler de Local para Evento, que celebran de una parte:
 </p>
 
 <p>
-EL ARRENDATARIO: {{ arrendatario_nombre }}, identificado con {{ tipo_documento }} N° {{ arrendatario_documento }},
-con domicilio en {{ arrendatario_direccion }}.
+<strong>EL ARRENDADOR:</strong> {{ arrendador_nombre }}, identificado con {{ arrendador_doc }} N.° {{ arrendador_dni }}, con domicilio en {{ arrendador_direccion }}.
 </p>
 
-<p class="titulo">PRIMERA: OBJETO</p>
-<p>El local ubicado en {{ direccion_local }} será usado para evento privado.</p>
-
-<p class="titulo">SEGUNDA: FECHA</p>
 <p>
-Desde {{ fecha_inicio }} {{ hora_inicio }} hasta {{ fecha_fin }} {{ hora_fin }}
+Y de la otra parte:
 </p>
 
-<p class="titulo">TERCERA: PRECIO</p>
-<p>Total: S/ {{ monto_total }}</p>
-<p>Adelanto: S/ {{ adelanto }} ({{ fecha_pago }})</p>
-<p>Saldo: S/ {{ saldo }}</p>
+<p>
+<strong>EL ARRENDATARIO:</strong> {{ arrendatario_nombre }}, identificado con {{ arrendatario_doc }} N.° {{ arrendatario_dni }}, con domicilio en {{ arrendatario_direccion }}.
+</p>
 
-<p class="titulo">CUARTA: USO</p>
-<p>No subarrendar, no exceder capacidad, no ilícitos.</p>
+<p>Ambas partes acuerdan lo siguiente:</p>
 
-<p class="titulo">QUINTA A DÉCIMA</p>
-<p>El arrendatario asume responsabilidad, daños y cumplimiento.</p>
+<p class="section-title">PRIMERA: OBJETO DEL CONTRATO</p>
+<p>
+Por el presente contrato, EL ARRENDADOR da en alquiler a EL ARRENDATARIO el local de eventos ubicado en el primer piso de su vivienda, sito en {{ direccion_local }}, exclusivamente para la realización de un evento privado.
+</p>
 
-<p>Jurisdicción: {{ jurisdiccion }}</p>
+<p class="section-title">SEGUNDA: FECHA Y HORARIO DEL EVENTO</p>
+<p>
+Desde {{ fecha_inicio }} {{ hora_inicio }} hasta {{ fecha_fin }} {{ hora_fin }}.
+</p>
 
-<p>Lugar y fecha: {{ lugar_fecha }}</p>
+<p>
+No se permitirá el uso del local fuera del horario pactado, salvo acuerdo previo y escrito entre las partes.
+</p>
 
-<br><br>
+<p class="section-title">TERCERA: PRECIO Y FORMA DE PAGO</p>
+<p>
+El precio total del alquiler del local es de S/ {{ monto_total }} ({{ monto_letras }}).
+</p>
 
-<p>EL ARRENDADOR __________________________</p>
-<p>EL ARRENDATARIO ________________________</p>
+<p>La forma de pago será la siguiente:</p>
+
+<ul>
+    <li>Monto de separación: S/ {{ adelanto }}, pagado en fecha {{ fecha_pago }}</li>
+    <li>Saldo restante: S/ {{ saldo }}, que deberá ser cancelado a más tardar el día del evento antes del inicio del mismo.</li>
+</ul>
+
+<p>
+El monto de separación no es reembolsable en caso de cancelación por parte del ARRENDATARIO.
+</p>
+
+<p class="section-title">CUARTA: USO DEL LOCAL</p>
+<ul>
+    <li>Subarrendar o ceder el local a terceros.</li>
+    <li>Realizar actividades ilícitas o contrarias a la moral y buenas costumbres.</li>
+    <li>Exceder la capacidad máxima del local.</li>
+</ul>
+
+<p class="section-title">QUINTA: RUIDOS Y VECINDARIO</p>
+<p>
+EL ARRENDATARIO se compromete a respetar los niveles de ruido permitidos y a mantener el orden.
+</p>
+
+<p class="section-title">SEXTA: RESPONSABILIDAD POR DAÑOS</p>
+<p>
+EL ARRENDATARIO será responsable por cualquier daño ocasionado al inmueble.
+</p>
+
+<p class="section-title">SÉPTIMA: SEGURIDAD Y ORDEN</p>
+<p>
+La seguridad del evento será responsabilidad del ARRENDATARIO.
+</p>
+
+<p class="section-title">OCTAVA: CANCELACIÓN DEL EVENTO</p>
+<ul>
+    <li>No devolución si cancela el arrendatario.</li>
+    <li>Devolución total si cancela el arrendador.</li>
+</ul>
+
+<p class="section-title">NOVENA: MODIFICACIONES</p>
+<p>
+Cualquier modificación deberá realizarse por escrito.
+</p>
+
+<p class="section-title">DÉCIMA: JURISDICCIÓN</p>
+<p>
+Jurisdicción: {{ jurisdiccion }}
+</p>
+
+<br>
+
+<p>
+En señal de conformidad, las partes firman:
+</p>
+
+<p>
+Lugar y fecha: {{ lugar_fecha }}
+</p>
+
+<div class="firma">
+    <div>
+        <strong>EL ARRENDADOR</strong><br><br>
+        __________________________
+    </div>
+
+    <div>
+        <strong>EL ARRENDATARIO</strong><br><br>
+        __________________________
+    </div>
+</div>
 
 </body>
 </html>
