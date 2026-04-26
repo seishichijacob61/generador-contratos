@@ -1,17 +1,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<html>
+<head>
+<meta charset="UTF-8">
 
 <style>
 @page {
     size: A4;
-    margin: 1.8cm;
+    margin: 2cm;
 }
 
 body {
-    font-family: "Times New Roman", serif;
+    font-family: Arial;
     font-size: 11pt;
-    line-height: 1.35;
+    line-height: 1.4;
 }
 
 h2 {
@@ -21,7 +24,7 @@ h2 {
 
 p {
     text-align: justify;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 .titulo {
@@ -31,22 +34,11 @@ p {
 
 ul {
     margin-top: 2px;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
-li {
-    margin-bottom: 3px;
-}
-
-/* Evita cortes feos */
-p, ul, li {
-    page-break-inside: avoid;
-}
-
-/* Bloque firmas */
 .firma {
-    page-break-inside: avoid;
-    margin-top: 25px;
+    margin-top: 30px;
 }
 
 table {
@@ -59,6 +51,10 @@ table {
 
 <body>
 
+<div style="text-align:center;">
+    <img src="logo.png" width="120">
+</div>
+
 <h2>CONTRATO DE ALQUILER DE LOCAL PARA EVENTO</h2>
 
 <p>
@@ -67,14 +63,96 @@ Conste por el presente documento el Contrato de Alquiler de Local para Evento, q
 
 <p>
 <strong>EL ARRENDADOR:</strong> {{ arrendador_nombre }},
-identificado con {{ tipo_doc_arrendador }} N.° {{ arrendador_doc }},
+identificado con {{ tipo_doc_arrendador }} N° {{ arrendador_doc }},
 con domicilio en {{ arrendador_direccion }}.
 </p>
 
-<p>Y de la otra parte:</p>
-
 <p>
 <strong>EL ARRENDATARIO:</strong> {{ arrendatario_nombre }},
+identificado con {{ tipo_documento }} N° {{ arrendatario_documento }},
+con domicilio en {{ arrendatario_direccion }}.
+</p>
+
+<p class="titulo">PRIMERA: OBJETO DEL CONTRATO</p>
+<p>
+El local ubicado en {{ direccion_local }} será utilizado para un evento privado.
+</p>
+
+<p class="titulo">SEGUNDA: FECHA Y HORARIO DEL EVENTO</p>
+<p>
+El evento se realizará desde el <strong>{{ fecha_inicio }}</strong> a las <strong>{{ hora_inicio }}</strong>,
+hasta el <strong>{{ fecha_fin }}</strong> a las <strong>{{ hora_fin }}</strong>.
+</p>
+
+<p class="titulo">TERCERA: PRECIO Y FORMA DE PAGO</p>
+<p>
+Monto total: S/ {{ monto_total }}
+</p>
+<ul>
+<li>Adelanto: S/ {{ adelanto }} ({{ fecha_pago }})</li>
+<li>Saldo: S/ {{ saldo }}</li>
+</ul>
+
+<p class="titulo">CUARTA: USO DEL LOCAL</p>
+<ul>
+<li>No subarrendar</li>
+<li>No exceder capacidad</li>
+<li>No actividades ilícitas</li>
+</ul>
+
+<p class="titulo">QUINTA: RUIDOS Y VECINDARIO</p>
+<p>
+El arrendatario respetará los niveles de ruido.
+</p>
+
+<p class="titulo">SEXTA: RESPONSABILIDAD POR DAÑOS</p>
+<p>
+Responsable por daños ocasionados.
+</p>
+
+<p class="titulo">SÉPTIMA: SEGURIDAD Y ORDEN</p>
+<p>
+Responsabilidad del arrendatario.
+</p>
+
+<p class="titulo">OCTAVA: CANCELACIÓN</p>
+<ul>
+<li>No devolución si cancela el arrendatario</li>
+<li>Devolución si cancela el arrendador</li>
+</ul>
+
+<p class="titulo">NOVENA: MODIFICACIONES</p>
+<p>
+Toda modificación debe ser por escrito.
+</p>
+
+<p class="titulo">DÉCIMA: JURISDICCIÓN</p>
+<p>
+Las partes se someten a la jurisdicción de {{ jurisdiccion }}.
+</p>
+
+<div class="firma">
+<p>Lugar y fecha: {{ lugar_fecha }}</p>
+
+<table>
+<tr>
+<td>
+<strong>EL ARRENDADOR</strong><br><br>
+Firma: ___________________<br>
+Doc: {{ arrendador_doc }}
+</td>
+
+<td>
+<strong>EL ARRENDATARIO</strong><br><br>
+Firma: ___________________<br>
+Doc: {{ arrendatario_documento }}
+</td>
+</tr>
+</table>
+</div>
+
+</body>
+</html><strong>EL ARRENDATARIO:</strong> {{ arrendatario_nombre }},
 identificado con {{ tipo_documento }} N.° {{ arrendatario_documento }},
 con domicilio en {{ arrendatario_direccion }}.
 </p>

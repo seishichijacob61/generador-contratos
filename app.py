@@ -1,8 +1,7 @@
 import streamlit as st
-from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-import datetime
+from jinja2 import Environment, FileSystemLoader
+from xhtml2pdf import pisa
+import os
 
 st.set_page_config(page_title="Generador de Contratos", layout="centered")
 
@@ -37,8 +36,11 @@ arrendatario_direccion = st.text_input("Dirección del cliente")
 # =========================
 st.subheader("📅 Datos del Evento")
 direccion_local = st.text_input("Dirección del local")
-fecha_evento = st.date_input("Fecha del evento")
+
+fecha_inicio = st.date_input("Fecha de inicio")
 hora_inicio = st.time_input("Hora de inicio")
+
+fecha_fin = st.date_input("Fecha de fin")
 hora_fin = st.time_input("Hora de término")
 
 # =========================
@@ -63,73 +65,55 @@ lugar_fecha = st.text_input("Lugar y fecha de firma")
 # =========================
 if st.button("📄 Generar contrato"):
 
-    styles = getSampleStyleSheet()
-    contenido = []
+    ruta = os.path.dirname(os.path.abspath(__file__))
+    env = Environment(loader=FileSystemLoader(ruta))
+    template = env.get_template("contrato_template.html")
 
-    def add(text):
-        contenido.append(Paragraph(text, styles["Normal"]))
-        contenido.append(Spacer(1, 8))
+    html = template.render(
+        arrendador_nombre=arrendador_nombre,
+        tipo_doc_arrendador=tipo_doc_arrendador,
+        arrendador_doc=arrendador_doc,
+        arrendador_direccion=arrendador_direccion,
 
-    # =========================
-    # CONTENIDO DEL CONTRATO
-    # =========================
-    add("<b>CONTRATO DE ALQUILER DE LOCAL PARA EVENTO</b>")
+        arrendatario_nombre=arrendatario_nombre,
+        tipo_documento=tipo_doc,
+        arrendatario_documento=arrendatario_doc,
+        arrendatario_direccion=arrendatario_direccion,
 
-    add(f"EL ARRENDADOR: {arrendador_nombre}, identificado con {tipo_doc_arrendador} N° {arrendador_doc}, con domicilio en {arrendador_direccion}.")
-    add(f"EL ARRENDATARIO: {arrendatario_nombre}, identificado con {tipo_doc} N° {arrendatario_doc}, con domicilio en {arrendatario_direccion}.")
+        direccion_local=direccion_local,
 
-    add("<b>PRIMERA: OBJETO DEL CONTRATO</b>")
-    add(f"El local ubicado en {direccion_local} será utilizado para un evento privado.")
+        fecha_inicio=fecha_inicio.strftime("%d/%m/%Y"),
+        hora_inicio=str(hora_inicio),
+        fecha_fin=fecha_fin.strftime("%d/%m/%Y"),
+        hora_fin=str(hora_fin),
 
-    add("<b>SEGUNDA: FECHA Y HORARIO</b>")
-    add(f"Fecha: {fecha_evento.strftime('%d/%m/%Y')}")
-    add(f"Inicio: {hora_inicio} - Fin: {hora_fin}")
+        monto_total=monto_total,
+        adelanto=adelanto,
+        saldo=saldo,
+        fecha_pago=fecha_pago.strftime("%d/%m/%Y"),
 
-    add("<b>TERCERA: PRECIO</b>")
-    add(f"Monto total: S/ {monto_total}")
-    add(f"Adelanto: S/ {adelanto} ({fecha_pago.strftime('%d/%m/%Y')})")
-    add(f"Saldo: S/ {saldo}")
+        jurisdiccion=jurisdiccion,
+        lugar_fecha=lugar_fecha
+    )
 
-    add("<b>CUARTA: USO DEL LOCAL</b>")
-    add("No subarrendar, no exceder capacidad, no actividades ilícitas.")
+    with open("contrato.html", "w", encoding="utf-8") as f:
+        f.write(html)
 
-    add("<b>QUINTA: RUIDOS</b>")
-    add("El arrendatario respetará niveles de ruido.")
+    with open("contrato.html", "r", encoding="utf-8") as f:
+        source_html = f.read()
 
-    add("<b>SEXTA: DAÑOS</b>")
-    add("Responsable por daños ocasionados.")
+    with open("contrato.pdf", "wb") as output_file:
+        pisa_status = pisa.CreatePDF(source_html, dest=output_file)
 
-    add("<b>SÉPTIMA: SEGURIDAD</b>")
-    add("Responsabilidad del arrendatario.")
+    if pisa_status.err:
+        st.error("Error al generar PDF")
+    else:
+        st.success("✅ Contrato generado correctamente")
 
-    add("<b>OCTAVA: CANCELACIÓN</b>")
-    add("No devolución si cancela el arrendatario.")
-
-    add("<b>NOVENA: MODIFICACIONES</b>")
-    add("Toda modificación debe ser por escrito.")
-
-    add("<b>DÉCIMA: JURISDICCIÓN</b>")
-    add(f"Jurisdicción: {jurisdiccion}")
-
-    add(f"Lugar y fecha: {lugar_fecha}")
-
-    add(" ")
-    add("EL ARRENDADOR ______________________")
-    add("EL ARRENDATARIO ______________________")
-
-    # =========================
-    # CREAR PDF
-    # =========================
-    pdf_file = "contrato.pdf"
-    doc = SimpleDocTemplate(pdf_file, pagesize=A4)
-    doc.build(contenido)
-
-    st.success("✅ Contrato generado correctamente")
-
-    with open(pdf_file, "rb") as f:
-        st.download_button(
-            label="📥 Descargar PDF",
-            data=f,
-            file_name="contrato_evento.pdf",
-            mime="application/pdf"
-        )
+        with open("contrato.pdf", "rb") as f:
+            st.download_button(
+                label="📥 Descargar PDF",
+                data=f,
+                file_name="contrato_evento.pdf",
+                mime="application/pdf"
+            )
