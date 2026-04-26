@@ -1,9 +1,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<html>
-<head>
-<meta charset="UTF-8">
 
 <style>
 @page {
@@ -19,31 +16,11 @@ body {
 
 h2 {
     text-align: center;
-    margin-bottom: 10px;
-}
-
-p {
-    text-align: justify;
-    margin-bottom: 6px;
 }
 
 .titulo {
     font-weight: bold;
     margin-top: 10px;
-}
-
-ul {
-    margin-top: 2px;
-    margin-bottom: 6px;
-}
-
-.firma {
-    margin-top: 30px;
-}
-
-table {
-    width: 100%;
-    margin-top: 20px;
 }
 </style>
 
@@ -51,197 +28,45 @@ table {
 
 <body>
 
-<div style="text-align:center;">
-    <img src="logo.png" width="120">
-</div>
-
 <h2>CONTRATO DE ALQUILER DE LOCAL PARA EVENTO</h2>
 
 <p>
-Conste por el presente documento el Contrato de Alquiler de Local para Evento, que celebran de una parte:
-</p>
-
-<p>
-<strong>EL ARRENDADOR:</strong> {{ arrendador_nombre }},
-identificado con {{ tipo_doc_arrendador }} N° {{ arrendador_doc }},
+EL ARRENDADOR: {{ arrendador_nombre }}, identificado con {{ tipo_doc_arrendador }} N° {{ arrendador_doc }},
 con domicilio en {{ arrendador_direccion }}.
 </p>
 
 <p>
-<strong>EL ARRENDATARIO:</strong> {{ arrendatario_nombre }},
-identificado con {{ tipo_documento }} N° {{ arrendatario_documento }},
+EL ARRENDATARIO: {{ arrendatario_nombre }}, identificado con {{ tipo_documento }} N° {{ arrendatario_documento }},
 con domicilio en {{ arrendatario_direccion }}.
 </p>
 
-<p class="titulo">PRIMERA: OBJETO DEL CONTRATO</p>
+<p class="titulo">PRIMERA: OBJETO</p>
+<p>El local ubicado en {{ direccion_local }} será usado para evento privado.</p>
+
+<p class="titulo">SEGUNDA: FECHA</p>
 <p>
-El local ubicado en {{ direccion_local }} será utilizado para un evento privado.
+Desde {{ fecha_inicio }} {{ hora_inicio }} hasta {{ fecha_fin }} {{ hora_fin }}
 </p>
 
-<p class="titulo">SEGUNDA: FECHA Y HORARIO DEL EVENTO</p>
-<p>
-El evento se realizará desde el <strong>{{ fecha_inicio }}</strong> a las <strong>{{ hora_inicio }}</strong>,
-hasta el <strong>{{ fecha_fin }}</strong> a las <strong>{{ hora_fin }}</strong>.
-</p>
+<p class="titulo">TERCERA: PRECIO</p>
+<p>Total: S/ {{ monto_total }}</p>
+<p>Adelanto: S/ {{ adelanto }} ({{ fecha_pago }})</p>
+<p>Saldo: S/ {{ saldo }}</p>
 
-<p class="titulo">TERCERA: PRECIO Y FORMA DE PAGO</p>
-<p>
-Monto total: S/ {{ monto_total }}
-</p>
-<ul>
-<li>Adelanto: S/ {{ adelanto }} ({{ fecha_pago }})</li>
-<li>Saldo: S/ {{ saldo }}</li>
-</ul>
+<p class="titulo">CUARTA: USO</p>
+<p>No subarrendar, no exceder capacidad, no ilícitos.</p>
 
-<p class="titulo">CUARTA: USO DEL LOCAL</p>
-<ul>
-<li>No subarrendar</li>
-<li>No exceder capacidad</li>
-<li>No actividades ilícitas</li>
-</ul>
+<p class="titulo">QUINTA A DÉCIMA</p>
+<p>El arrendatario asume responsabilidad, daños y cumplimiento.</p>
 
-<p class="titulo">QUINTA: RUIDOS Y VECINDARIO</p>
-<p>
-El arrendatario respetará los niveles de ruido.
-</p>
+<p>Jurisdicción: {{ jurisdiccion }}</p>
 
-<p class="titulo">SEXTA: RESPONSABILIDAD POR DAÑOS</p>
-<p>
-Responsable por daños ocasionados.
-</p>
-
-<p class="titulo">SÉPTIMA: SEGURIDAD Y ORDEN</p>
-<p>
-Responsabilidad del arrendatario.
-</p>
-
-<p class="titulo">OCTAVA: CANCELACIÓN</p>
-<ul>
-<li>No devolución si cancela el arrendatario</li>
-<li>Devolución si cancela el arrendador</li>
-</ul>
-
-<p class="titulo">NOVENA: MODIFICACIONES</p>
-<p>
-Toda modificación debe ser por escrito.
-</p>
-
-<p class="titulo">DÉCIMA: JURISDICCIÓN</p>
-<p>
-Las partes se someten a la jurisdicción de {{ jurisdiccion }}.
-</p>
-
-<div class="firma">
 <p>Lugar y fecha: {{ lugar_fecha }}</p>
 
-<table>
-<tr>
-<td>
-<strong>EL ARRENDADOR</strong><br><br>
-Firma: ___________________<br>
-Doc: {{ arrendador_doc }}
-</td>
+<br><br>
 
-<td>
-<strong>EL ARRENDATARIO</strong><br><br>
-Firma: ___________________<br>
-Doc: {{ arrendatario_documento }}
-</td>
-</tr>
-</table>
-</div>
-
-</body>
-</html><strong>EL ARRENDATARIO:</strong> {{ arrendatario_nombre }},
-identificado con {{ tipo_documento }} N.° {{ arrendatario_documento }},
-con domicilio en {{ arrendatario_direccion }}.
-</p>
-
-<p>Ambas partes acuerdan lo siguiente:</p>
-
-<p class="titulo">PRIMERA: OBJETO DEL CONTRATO</p>
-<p>
-EL ARRENDADOR da en alquiler el local ubicado en {{ direccion_local }},
-para un evento privado.
-</p>
-
-<p class="titulo">SEGUNDA: FECHA Y HORARIO DEL EVENTO</p>
-<p>
-El evento se realizará el día {{ fecha_evento }}.
-</p>
-<ul>
-<li>Hora de inicio: {{ hora_inicio }}</li>
-<li>Hora de término: {{ hora_fin }}</li>
-</ul>
-<p>No se permitirá el uso fuera del horario pactado.</p>
-
-<p class="titulo">TERCERA: PRECIO Y FORMA DE PAGO</p>
-<p>
-El precio total es S/ {{ monto_total }} ({{ monto_texto }} soles).
-</p>
-<ul>
-<li>Adelanto: S/ {{ adelanto }} ({{ fecha_pago }})</li>
-<li>Saldo: S/ {{ saldo }}</li>
-</ul>
-<p>El adelanto no es reembolsable.</p>
-
-<p class="titulo">CUARTA: USO DEL LOCAL</p>
-<ul>
-<li>Prohibido subarrendar</li>
-<li>No actividades ilícitas</li>
-<li>No exceder capacidad</li>
-</ul>
-
-<p class="titulo">QUINTA: RUIDOS Y VECINDARIO</p>
-<p>
-El arrendatario se compromete a respetar los niveles de ruido.
-</p>
-
-<p class="titulo">SEXTA: RESPONSABILIDAD POR DAÑOS</p>
-<p>
-El arrendatario asume daños ocasionados.
-</p>
-
-<p class="titulo">SÉPTIMA: SEGURIDAD Y ORDEN</p>
-<p>
-Responsabilidad del arrendatario.
-</p>
-
-<p class="titulo">OCTAVA: CANCELACIÓN DEL EVENTO</p>
-<ul>
-<li>No devolución si cancela el arrendatario</li>
-<li>Devolución si cancela el arrendador</li>
-</ul>
-
-<p class="titulo">NOVENA: MODIFICACIONES</p>
-<p>
-Toda modificación debe ser por escrito.
-</p>
-
-<p class="titulo">DÉCIMA: JURISDICCIÓN</p>
-<p>
-Las partes se someten a la jurisdicción de {{ jurisdiccion }}.
-</p>
-
-<div class="firma">
-<p>Firma en: {{ lugar_fecha }}</p>
-
-<table>
-<tr>
-<td>
-<strong>EL ARRENDADOR</strong><br><br>
-Firma: ___________________<br>
-Doc: {{ arrendador_doc }}
-</td>
-
-<td>
-<strong>EL ARRENDATARIO</strong><br><br>
-Firma: ___________________<br>
-Doc: {{ arrendatario_documento }}
-</td>
-</tr>
-</table>
-</div>
+<p>EL ARRENDADOR __________________________</p>
+<p>EL ARRENDATARIO ________________________</p>
 
 </body>
 </html>
